@@ -42,15 +42,24 @@ CHIP ALU {
         ng; // 1 if (out < 0),  0 otherwise
 
     PARTS:
-    Mux16(a = x, b = 0, sel = zx, out = x1);
-    Mux16(a = x1, b = Not(in = x, out = outnx), sel = nx, out = x2);
-    Mux16(a = y, b = 0, sel = zy, out = y1);
-    Mux16(a = y1, b = Not(in = y, out = outny), sel = ny, out = y2);
-    Mux16(a = And(a = x2, b = y2, out = x2y2and), b = Add16(a = x2, b = y2, out = x2y2add), sel = f, out = fout);
-    Mux16(a = fout, b = Not(in = fout, out = finout), sel = no, out = out);
+    Mux16(a = x, b = false, sel = zx, out = xZeroed);
+    Mux16(a = y, b = false, sel = zy, out = yZeroed);
 
-    Or(a=x,b=y,out=o);
-    Not(in = o, out = zr);
+    Not16(in = xZeroed, out = xNot);
+    Not16(in = yZeroed, out = yNot);
 
-    Not();
+    Mux16(a = xZeroed, b = xNot, sel = nx, out = xProcessed);
+    Mux16(a = yZeroed, b = yNot, sel = ny, out = yProcessed);
+
+    And16(a = xProcessed, b = yProcessed, out = andOut);
+    Add16(a = xProcessed, b = yProcessed, out = addOut);
+    Mux16(a = andOut, b = addOut, sel = f, out = fOut);
+
+    Not16(in = fOut, out = fOutNot);
+    Mux16(a = fOut, b = fOutNot, sel = no, out = out, out[15] = ng, out[0..7] = low, out[8..15] = high);
+
+    Or8Way(in = low, out = orLow);
+    Or8Way(in = high, out = orHigh);
+    Or(a = orLow, b = orHigh, out = anySet);
+    Not(in = anySet, out = zr);
 }

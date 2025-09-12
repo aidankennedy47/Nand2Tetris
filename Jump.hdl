@@ -27,5 +27,15 @@ CHIP Jump {
     OUT jump;           // true if a jump should be performed, false otherwise 
 
 PARTS:
-    // Put your code here:
+    And(a = j1, b = ng, out = j1Ng);
+    And(a = j2, b = zr, out = j2Zr);
+
+    Not(in = ng, out = ngNot);
+    Not(in = zr, out = zrNot);
+
+    And(a = zrNot, b = ngNot, out = posConditions);
+    And(a = j3, b = posConditions, out = jumpPos);
+
+    Or(a = j1Ng, b = j2Zr, out = orNgZr);
+    Or(a = orNgZr, b = jumpPos, out = jump);
 }

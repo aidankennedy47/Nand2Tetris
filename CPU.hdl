@@ -39,5 +39,35 @@ CHIP CPU {
         pc[15];          // address of next instruction
 
     PARTS:
-    // Put your code here:
+    DMux(in = true, sel = instruction[15], a = atype, b = ctype);
+    
+    And(a = ctype, b= instruction[5], out = c1load);
+    Or(a = atype, b = c1load, out = ainstruct);
+
+    And(a = ctype, b = instruction[4], out = cinstruct);
+
+    Mux16(a = instruction, b = aluout, sel = ctype, out = Ain);
+    
+    ARegister(in = Ain, load = ainstruct, out = addressM);
+
+    Mux16(a = addressM, b = inM, sel = instruction[12], out = aluY);
+
+    ALU(x = dOut, y = aluY, zx = instruction[11], nx = instruction[10], zy = instruction[9], ny = instruction[8], f = instruction[7], no = instruction[6], out = aluout, zr = zrout, ng = ngout);
+
+    And(a = ctype, b = instruction[3], out = writeM);
+    Or(a = false, b = aluout, out = outM);
+
+    DRegister(in = aluout, load = cinstruct, out = dOut);
+
+    And(a = instruction[0], b = Not(zrOut), out = gtCond);
+    And(a = gtCond, b = Not(ngOut), out = jumpGT);
+    And(a= instruction[2], b= ngOut, out = jumpLT);
+    And(a = instruction[1], b = zrOut, out = jumpEQ);
+    Or(a = jumpGT, b = jumpLT, out = jump1);
+    Or(a = jump1, b = jumpEQ, out = jumpCond);
+
+    Mux16(a = pc,  b = aOut, sel = jumpCond, out = pcIn);
+    Mux16(a = pcIn, b = false, sel = reset, out = pcOut);
+
+    PC(in = pcOut, load = Or(jumpCond, rest), inc = true, out = pc);
 }

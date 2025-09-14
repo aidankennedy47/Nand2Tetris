@@ -39,35 +39,44 @@ CHIP CPU {
         pc[15];          // address of next instruction
 
     PARTS:
-    DMux(in = true, sel = instruction[15], a = atype, b = ctype);
+
+    //decode
+    Decode(in = instruction, type = cType, a = aSel,
+    c1 = c1, c2 = c2, c3 = c3, c4 = c4, c5 = c5, c6 = c6,
+    d1 = loadA, d2 = loadD, d3 = writeM,
+    j1 = j1, j2 = j2, j3 = j3);
+
+    //a register
+    Mux16(a = instruction, b = aluOut, sel = cType, out = aIn);
+    ARegister(in = aIn, load = loadA, out = aOut, out[0..14] = addressM);
+
+    //d register and addressM
+    DRegister(in = aluOut, load = loadD, out = dOut);
+
+
+    //computation bits for alu
+    Mux16(a = aOut, b = inM, sel = aSel, out = aluY);
+    ALU(x = dOut, y = aluY,
+    zx = c1,
+    nx = c2,
+    zy = c3,
+    ny = c4,
+    f = c5,
+    no = c6,
+    out = aluOut,
+    zr = zrOut, ng = ngOut);
+
+    //outM
+    Or16(a = aluOut, b = false, out = outM);
+
+    //program counter/jump
+    Jump(j1 = j1,
+    j2 = j2,
+    j3 = j3,
+    zr = zrOut, ng = ngOut, jump = pcLoad);
+
+    Not(in = pcLoad, out = pcInc);
     
-    And(a = ctype, b= instruction[5], out = c1load);
-    Or(a = atype, b = c1load, out = ainstruct);
-
-    And(a = ctype, b = instruction[4], out = cinstruct);
-
-    Mux16(a = instruction, b = aluout, sel = ctype, out = Ain);
-    
-    ARegister(in = Ain, load = ainstruct, out = addressM);
-
-    Mux16(a = addressM, b = inM, sel = instruction[12], out = aluY);
-
-    ALU(x = dOut, y = aluY, zx = instruction[11], nx = instruction[10], zy = instruction[9], ny = instruction[8], f = instruction[7], no = instruction[6], out = aluout, zr = zrout, ng = ngout);
-
-    And(a = ctype, b = instruction[3], out = writeM);
-    Or(a = false, b = aluout, out = outM);
-
-    DRegister(in = aluout, load = cinstruct, out = dOut);
-
-    And(a = instruction[0], b = Not(zrOut), out = gtCond);
-    And(a = gtCond, b = Not(ngOut), out = jumpGT);
-    And(a= instruction[2], b= ngOut, out = jumpLT);
-    And(a = instruction[1], b = zrOut, out = jumpEQ);
-    Or(a = jumpGT, b = jumpLT, out = jump1);
-    Or(a = jump1, b = jumpEQ, out = jumpCond);
-
-    Mux16(a = pc,  b = aOut, sel = jumpCond, out = pcIn);
-    Mux16(a = pcIn, b = false, sel = reset, out = pcOut);
-
-    PC(in = pcOut, load = Or(jumpCond, rest), inc = true, out = pc);
+    //PC
+    PC(in = aOut, load = pcLoad, inc = pcInc, reset = reset, out[0..14] = pc);
 }

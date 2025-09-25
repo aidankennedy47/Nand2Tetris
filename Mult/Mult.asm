@@ -6,61 +6,67 @@
 // Multiplies R1 and R2 and stores the result in R0.
 // (R0, R1, R2 refer to RAM[0], RAM[1], and RAM[2], respectively.)
 
-
 @R0
-M = 0
+M=0
 
 @R1
-D = M
+D=M
+@R3
+M=D
+
+@R2
+D=M
+@R4
+M=D
+
+@R5
+M=0
+
+@R3
+D=M
 @R1_POS
 D;JGE
-D = -D
-@R1
-M = D
+@R5
+M=M+1     
+D=-D
+@R3
+M=D
 (R1_POS)
 
-@R2
-D = M
+@R4
+D=M
 @R2_POS
 D;JGE
-D = -D
-@R2
-M = D
+@R5
+M=M+1     
+D=-D
+@R4
+M=D
 (R2_POS)
 
 (LOOP)
-@R2
-D = M
-@END
+@R4
+D=M
+@AFTER_LOOP
 D;JEQ
 
 @R0
-D = M
-@R1
-D = D + M
+D=M
+@R3
+D=D+M
 @R0
-M = D
+M=D
 
-@R2
-M = M - 1
+@R4
+M=M-1
 
 @LOOP
 0;JMP
 
-(END)
-
-@R1
-D = M
-@R1_NEG
-D;JGE
-D = -D
-@R1
-M = D
-
-@R2
-D = M
-@R2_NEG
-D;JGE
-D = -D
-@R2
-M = D
+(AFTER_LOOP)
+@R5
+D=M
+@DONE
+D;JNE
+@END_SIGN
+0;JMP

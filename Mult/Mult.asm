@@ -8,6 +8,34 @@
 
 @R0
 M=0
+// check if R1 is negative
+//    if (R1 < 0) {
+//        R1 = -R1;
+//        SIGN++;}
+@SIGN
+M = -1
+
+@R1
+D = M
+@R1END
+D;JGE
+
+@R1
+M = -M
+@SIGN
+M = M + 1
+(R1END)
+
+@R2
+D = M
+@R2END
+D;JGE
+
+@R2
+M = -M
+@SIGN
+M = M + 1
+(R2END)
 
 @R1
 D=M
@@ -61,12 +89,18 @@ M=D
 M=M-1
 
 @LOOP
+
 0;JMP
 
 (AFTER_LOOP)
-@R5
-D=M
-@DONE
+//if sign == 0{r0 = -r0}
+@SIGN
+D = M
+@R0END
 D;JNE
-@END_SIGN
+@R0
+M = -M
+(R0END)
+(END)
+@END
 0;JMP

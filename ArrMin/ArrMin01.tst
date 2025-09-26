@@ -18,7 +18,7 @@ set RAM[23] 3;  // Set Arr[3]
 repeat 300 {
   ticktock;    // Run for 300 clock cycles
 }
-set RAM[1] 20,  // Restore arguments in case program used them
-set RAM[2] 4,
+set RAM[1] 21,  // Restore arguments in case program used them
+set RAM[2] 5,
 output;        // Output to file
 

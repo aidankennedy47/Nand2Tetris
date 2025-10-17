@@ -1,28 +1,21 @@
 class VMTranslator:
-
-    @staticmethod
-    def push_cmds(string):
-        return f"@{string}\nD=M\n" + "\nD=A\n@SP\nA=M\nM=D\n@SP\nM=M+1"
-
-    @staticmethod
     def vm_push(segment, offset):
         if segment == 'constant':
-            return VMTranslator.push_cmds(f"{offset}")
+            return f"@{offset}\n" + "\nD=A\n@SP\nA=M\nM=D\n@SP\nM=M+1\n"
         if segment == 'local':
-            return VMTranslator.push_cmds("LCL")
+            return f"@LCL\nD=M\n@{offset}\nA=D+A\nD=M\n@SP\nA=M\nM=D\n@SP\nM=M+1\n"
         if segment == 'argument':
-            return VMTranslator.push_cmds("ARG")
+            return f"@ARG\nD=M\n@{offset}\nA=D+A\nD=M\n@SP\nA=M\nM=D\n@SP\nM=M+1\n"
         if segment == 'this':
-            return VMTranslator.push_cmds("THIS")
+            return f"@THIS\nD=M\n@{offset}\nA=D+A\nD=M\n@SP\nA=M\nM=D\n@SP\nM=M+1\n"
         if segment == 'that':
-            return VMTranslator.push_cmds("THAT")
+            return f"@THAT\nD=M\n@{offset}\nA=D+A\nD=M\n@SP\nA=M\nM=D\n@SP\nM=M+1\n"
         if segment == 'temp':
-            return VMTranslator.push_cmds(f"5 + {offset}")
+            return f"@{5 + offset}\nD=M\n@SP\nA=M\nM=D\n@SP\nM=M+1\n"
         if segment == 'pointer':
-            base = 3 + offset
-            return VMTranslator.push_cmds(f"{base}")
+            return f"@{3 + offset}\nD=M\n@SP\nA=M\nM=D\n@SP\nM=M+1\n"
         if segment == 'static':
-            return VMTranslator.push_cmds(f"Static.{offset}")
+            return f"@VMTranslator.{offset}\nD=M\n@SP\nA=M\nM=D\n@SP\nM=M+1\n"
         else:
             return ""
 

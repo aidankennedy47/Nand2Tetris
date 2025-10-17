@@ -1,0 +1,8 @@
+// EqTest.vm
+push constant 5
+push constant 5
+eq               // expect TRUE (-1) on stack
+
+push constant 5
+push constant 7
+eq               // expect FALSE (0)

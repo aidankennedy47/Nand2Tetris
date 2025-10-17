@@ -48,48 +48,39 @@ class VMTranslator:
         return "@SP\nAM=M-1\nD=M\nM=-D\n@SP\nM=M+1\n"
 
     def vm_eq():
-        return ""
+        return "@SP\nAM=M-1\nD=M\nA=A-1\nD=M-D\n@IS_EQUAL\nD;JEQ\n@SP\nA=M-1\nM=0\n@END\n0;JMP\n(IS_EQUAL)\n@SP\nA=M-1\nM=-1\n(END)\n"
 
     def vm_gt():
-        return ""
+        return "@SP\nAM=M-1\nD=M\nA=A-1\nD=M-D\n@IS_GREATER\nD;JGT\n@SP\nA=M-1\nM=0\n@END\n0;JMP\n(IS_GREATER)\n@SP\nA=M-1\nM=-1\n(END)\n"
 
     def vm_lt():
         return ""
 
     def vm_and():
-        '''Generate Hack Assembly code for a VM and operation'''
-        return ""
+        return "@SP\nAM=M-1\nD=M\nA=A-1\nM=M&D\nM"
 
     def vm_or():
-        '''Generate Hack Assembly code for a VM or operation'''
-        return ""
+        return "@SP\nAM=M-1\nD=M\nA=A-1\nM=M|D\n"
 
     def vm_not():
-        '''Generate Hack Assembly code for a VM not operation'''
         return ""
 
     def vm_label(label):
-        '''Generate Hack Assembly code for a VM label operation'''
         return ""
 
     def vm_goto(label):
-        '''Generate Hack Assembly code for a VM goto operation'''
         return ""
 
     def vm_if(label):
-        '''Generate Hack Assembly code for a VM if-goto operation'''
         return ""
 
     def vm_function(function_name, n_vars):
-        '''Generate Hack Assembly code for a VM function operation'''
         return ""
 
     def vm_call(function_name, n_args):
-        '''Generate Hack Assembly code for a VM call operation'''
         return ""
 
     def vm_return():
-        '''Generate Hack Assembly code for a VM return operation'''
         return ""
 
 # A quick-and-dirty parser when run as a standalone script.

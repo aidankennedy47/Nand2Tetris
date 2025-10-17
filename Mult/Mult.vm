@@ -1,8 +1,8 @@
-// Calculates a = x*y
-// a is a local variable
-// x & y are static variables
+push static 0
+pop temp 4
+push static 1
+pop temp 5
 
-//initialise result
 push constant 0
 pop local 0
 
@@ -11,7 +11,7 @@ push constant 0 //0 on top of stack
 pop temp 0 //t0 = 0 which is counter
 
 //signs of x
-push static 1
+push temp 5
 push constant 0
 lt //x < 0, if true X_NEG
 if-goto X_NEG
@@ -25,7 +25,7 @@ pop temp 2 //sign x is 1, neg
 label CONT_X_POS
 
 //signs of y
-push static 2
+push temp 4
 push constant 0
 lt //x < 0, if true Y_NEG
 if-goto Y_NEG
@@ -39,40 +39,40 @@ pop temp 3 //sign y is 1, neg
 label CONT_Y_POS
 
 //ab value for x
-push static 1
+push temp 5
 push constant 0
 lt
 if-goto MAKE_X_POS
-goto CONT_X_POS
+goto CONT_X                     // was goto CONT_X_POS
 label MAKE_X_POS
-push static 1
+push temp 5
 neg
-pop static 1
+pop temp 5
 label CONT_X
 
 //ab value for y
-push static 2
+push temp 4
 push constant 0
 lt
 if-goto MAKE_Y_POS
-goto CONT_Y_POS
+goto CONT_Y               // was goto CONT_Y_POS
 label MAKE_Y_POS
-push static 2
+push temp 4
 neg
-pop static 2
+pop temp 4
 label CONT_Y
 
 //loop
 label LOOP_START
 push temp 0 //counter
-push static 1 //x
+push temp 5 //x
 lt //if counter < x, go to loop body and add y to a
 if-goto LOOP_BODY
 goto LOOP_END
 
 label LOOP_BODY
 push local 0
-push static 2
+push temp 4
 add
 pop local 0 //update a to resulting value
 
@@ -99,3 +99,4 @@ neg
 pop local 0
 
 label END
+goto END

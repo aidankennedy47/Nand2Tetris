@@ -66,13 +66,13 @@ class VMTranslator:
         return ""
 
     def vm_label(label):
-        return ""
+        return f"({label})\n"
 
     def vm_goto(label):
-        return ""
+        return f"@{label}\n0;JMP\n"
 
     def vm_if(label):
-        return ""
+        return f"@SP\nAM=M-1\nD=M\n@({label})\nD:JNE"
 
     def vm_function(function_name, n_vars):
         return ""

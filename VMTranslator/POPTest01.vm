@@ -1,0 +1,15 @@
+// Testing pop operations
+push constant 10
+pop local 0
+push constant 20
+pop argument 1
+push constant 30
+pop this 2
+push constant 40
+pop that 3
+push constant 50
+pop temp 4
+push constant 60
+pop pointer 0
+push constant 70
+pop static 5

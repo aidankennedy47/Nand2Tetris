@@ -1,0 +1,10 @@
+// Testing push operations
+push constant 10
+push constant 20
+push local 0
+push argument 1
+push this 2
+push that 3
+push temp 4
+push pointer 0
+push static 5

@@ -21,20 +21,20 @@ class VMTranslator:
 
     def vm_pop(segment, offset):
         if segment == 'local':
-            return f"@LCL\nD=M\n@{offset}\nD=D+A\n@R13\nA=M\nM=D\n@SP\nM=M-1\nA=M\nD=M\n@R13\nA=M\nM=D\n"
+            return f"@LCL\nD=M\n@{offset}\nD=D+A\n@R13\nM=D\n@SP\nAM=M-1\nD=M\n@R13\nA=M\nM=D\n"
         if segment == 'argument':
-            return f"@ARG\nD=M\n@{offset}\nD=D+A\n@R13\nA=M\nM=D\n@SP\nM=M-1\nA=M\nD=M\n@R13\nA=M\nM=D\n"
+            return f"@ARG\nD=M\n@{offset}\nD=D+A\n@R13\nM=D\n@SP\nAM=M-1\nD=M\n@R13\nA=M\nM=D\n"
         if segment == 'this':
-            return f"@THIS\nD=M\n@{offset}\nD=D+A\n@R13\nA=M\nM=D\n@SP\nM=M-1\nA=M\nD=M\n@R13\nA=M\nM=D\n"
+            return f"@THIS\nD=M\n@{offset}\nD=D+A\n@R13\nM=D\n@SP\nAM=M-1\nD=M\n@R13\nA=M\nM=D\n"
         if segment == 'that':
-            return f"@THAT\nD=M\n@{offset}\nD=D+A\n@R13\nA=M\nM=D\n@SP\nM=M-1\nA=M\nD=M\n@R13\nA=M\nM=D\n"
+            return f"@THAT\nD=M\n@{offset}\nD=D+A\n@R13\nM=D\n@SP\nAM=M-1\nD=M\n@R13\nA=M\nM=D\n"
         if segment == 'temp':
-            return f"@SP\nM=M-1\nA=M\nD=M\n@{5+offset}\nM=D\n"
+            return f"@SP\nAM=M-1\nD=M\n@{5+offset}\nM=D\n"
         if segment == 'pointer':
             base = 3 + offset
-            return f"@SP\nM=M-1\nA=M\nD=M\n@{base}\nM=D\n"
+            return f"@SP\nAM=M-1\nD=M\n@{base}\nM=D\n"
         if segment == 'static':
-            return f"@SP\nM=M-1\nA=M\nD=M\n@VMTranslator.{offset}\nM=D\n"
+            return f"@SP\nAM=M-1\nD=M\n@VMTranslator.{offset}\nM=D\n"
         else:
             return ""
 

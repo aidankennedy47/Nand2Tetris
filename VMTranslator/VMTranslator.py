@@ -72,7 +72,7 @@ class VMTranslator:
         return f"@{label}\n0;JMP\n"
 
     def vm_if(label):
-        return f"@SP\nAM=M-1\nD=M\n@({label})\nD;JNE"
+        return f"@SP\nAM=M-1\nD=M\n@{label}\nD;JNE"
 
     def vm_function(function_name, n_vars):
         return ""

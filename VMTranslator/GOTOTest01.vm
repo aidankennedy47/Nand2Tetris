@@ -1,0 +1,4 @@
+goto SKIP
+push constant 100
+label SKIP
+push constant 5

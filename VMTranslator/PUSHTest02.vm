@@ -1,0 +1,6 @@
+// Simple push test
+push constant 7
+push constant 14
+push local 0
+push argument 0
+push static 0

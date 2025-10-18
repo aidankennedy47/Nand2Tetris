@@ -1,0 +1,5 @@
+push constant 1
+if-goto CONT
+push constant 100
+label CONT
+push constant 20

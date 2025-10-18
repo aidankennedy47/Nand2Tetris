@@ -1,0 +1,5 @@
+function SubTwo 2
+push constant 8
+push constant 12
+sub
+return

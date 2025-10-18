@@ -1,0 +1,5 @@
+push constant 7
+goto END
+push constant 99
+label END
+push constant 10

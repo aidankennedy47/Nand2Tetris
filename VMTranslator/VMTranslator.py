@@ -77,7 +77,7 @@ class VMTranslator:
     def vm_function(function_name, n_vars):
         asm = f"({function_name})\n"
         for i in range(n_vars):
-            asm += "@0\nD=A\n@SP\nA=M\nM=D\n@SP\nM=M+1\n"
+            asm += "@0\nD=M\n@SP\nA=M\nM=D\n@SP\nM=M+1\n"
         return asm
 
     def vm_call(function_name, n_args):

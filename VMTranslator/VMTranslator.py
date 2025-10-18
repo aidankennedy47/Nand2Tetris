@@ -77,28 +77,23 @@ class VMTranslator:
     def vm_function(function_name, n_vars):
         asm = f"({function_name})\n"
         for i in range(n_vars):
-            asm += "@0\nD=M\n@SP\nA=M\nM=D\n@SP\nM=M+1\n"
+            asm += "@0\nD=A\n@SP\nA=M\nM=D\n@SP\nM=M+1\n"
         return asm
 
+    call_counter = 0
     def vm_call(function_name, n_args):
-        call_counter = 0
-        ret_label = f"RET_ADDRESS{call_counter}"
-        call_counter += 1
+        ret_address = f"RETURN_{VMTranslator.call_counter}"
+        VMTranslator.call_counter += 1
 
-        asm = ""
-
-        asm+= f"@{ret_label}\nD=A\n@SP\nA=M\nM=D\n@SP\nM=M+1\n"
+        asm = f"@{ret_address}\nD=A\n@SP\nA=M\nM=D\n@SP\nM=M+1\n"
 
         for segment in ["LCL", "ARG", "THIS", "THAT"]:
             asm += f"@{segment}\nD=M\n@SP\nA=M\nM=D\n@SP\nM=M+1\n"
         
-        asm += "@SP\nD=M\n"
-        asm += f"@5\nD=D-A\n@{n_args}\nM=D\n"
-
+        asm += f"@SP\nD=M\n@5\nD=D-A\n@{n_args}\nD=D-A\n@ARG\nM=D\n"
         asm += "@SP\nD=M\n@LCL\nM=D\n"
         asm += f"@{function_name}\n0;JMP\n"
-
-        asm += f"({ret_label})\n"
+        asm += f"({ret_address})\n"
         return asm
 
     def vm_return():

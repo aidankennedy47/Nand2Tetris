@@ -7,7 +7,7 @@ M=D
 @SP
 M=M+1
 
-@RET_ADDRESS0
+@RETURN_0
 D=A
 @SP
 A=M
@@ -47,6 +47,8 @@ D=M
 @5
 D=D-A
 @1
+D=D-A
+@ARG
 M=D
 @SP
 D=M
@@ -54,5 +56,5 @@ D=M
 M=D
 @function_test
 0;JMP
-(RET_ADDRESS0)
+(RETURN_0)
 

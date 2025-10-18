@@ -57,7 +57,7 @@ class VMTranslator:
         return ""
 
     def vm_and():
-        return "@SP\nAM=M-1\nD=M\nA=A-1\nM=M&D\nM"
+        return "@SP\nAM=M-1\nD=M\nA=A-1\nM=M&D\n"
 
     def vm_or():
         return "@SP\nAM=M-1\nD=M\nA=A-1\nM=M|D\n"
@@ -72,7 +72,7 @@ class VMTranslator:
         return f"@{label}\n0;JMP\n"
 
     def vm_if(label):
-        return f"@SP\nAM=M-1\nD=M\n@{label}\nD;JNE"
+        return f"@SP\nAM=M-1\nD=M\n@{label}\nD;JNE\n"
 
     def vm_function(function_name, n_vars):
         asm = f"({function_name})\n"
@@ -81,6 +81,7 @@ class VMTranslator:
         return asm
 
     call_counter = 0
+
     def vm_call(function_name, n_args):
         ret_address = f"RETURN_{VMTranslator.call_counter}"
         VMTranslator.call_counter += 1

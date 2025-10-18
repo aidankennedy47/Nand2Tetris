@@ -98,7 +98,17 @@ class VMTranslator:
         return asm
 
     def vm_return():
-        return ""
+        asm = "@LCL\nD=M\n@R13\nM=D\n"
+        asm += "@5\nA=D-A\nD=M\n@R14\nM=D\n"
+        asm += "@SP\nAM=M-1\nD=M\n@ARG\nA=M\nM=D\n"
+        asm += "@ARG\nD=M+1\n@SP\nM=D\n"
+        asm += f"@R13\nAM=M-1\nD=M\n@THAT\nM=D\n"
+        asm += f"@R13\nAM=M-1\nD=M\n@2\n@THIS\nM=D\n"
+        asm += f"@R13\nAM=M-1\nD=M\n@3\n@ARG\nM=D\n"
+        asm += f"@R13\nAM=M-1\nD=M\n@4\n@LCL\nM=D\n"
+
+        asm += "@R14\nA=M\n0;JMP\n"
+        return asm
 
 # A quick-and-dirty parser when run as a standalone script.
 if __name__ == "__main__":

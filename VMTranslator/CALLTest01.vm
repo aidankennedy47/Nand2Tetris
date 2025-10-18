@@ -1,0 +1,2 @@
+push constant 7
+call function_test 1

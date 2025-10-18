@@ -75,10 +75,31 @@ class VMTranslator:
         return f"@SP\nAM=M-1\nD=M\n@{label}\nD;JNE"
 
     def vm_function(function_name, n_vars):
-        return ""
+        asm = f"({function_name})\n"
+        for i in range(n_vars):
+            asm += "@0\nD=A\n@SP\nA=M\nM=D\n@SP\nM=M+1\n"
+        return asm
 
     def vm_call(function_name, n_args):
-        return ""
+        call_counter = 0
+        ret_label = f"RET_ADDRESS{call_counter}"
+        call_counter += 1
+
+        asm = ""
+
+        asm+= f"@{ret_label}\nD=A\n@SP\nA=M\nM=D\n@SP\nM=M+1\n"
+
+        for segment in ["LCL", "ARG", "THIS", "THAT"]:
+            asm += f"@{segment}\nD=M\n@SP\nA=M\nM=D\n@SP\nM=M+1\n"
+        
+        asm += "@SP\nD=M\n"
+        asm += f"@5\nD=D-A\n@{n_args}\nM=D\n"
+
+        asm += "@SP\nD=M\n@LCL\nM=D\n"
+        asm += f"@{function_name}\n0;JMP\n"
+
+        asm += f"({ret_label})\n"
+        return asm
 
     def vm_return():
         return ""

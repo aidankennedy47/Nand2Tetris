@@ -180,11 +180,12 @@ class CompilerParser :
 
     def have(self,expectedType,expectedValue):
         current_token = self.current()
-        if current_token.getType() == expectedType and current_token.getValue() == expectedValue:
-            return True
-        elif current_token.getType() == expectedType and current_token.getValue() in expectedValue:
-            return True
-        return False
+        return(current_token.getType() == expectedType and current_token.getValue() == expectedValue)
+        # if current_token.getType() == expectedType and current_token.getValue() == expectedValue:
+        #     return True
+        # elif current_token.getType() == expectedType and current_token.getValue() in expectedValue:
+        #     return True
+        # return False
 
 
     def mustBe(self,expectedType,expectedValue):
@@ -213,7 +214,7 @@ if __name__ == "__main__":
 
     parser = CompilerParser(tokens)
     try:
-        result = parser.compileProgram()
+        result = parser.compileClass()
         print(result)
     except ParseException:
         print("Error Parsing!")

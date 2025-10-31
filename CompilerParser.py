@@ -57,7 +57,25 @@ class CompilerParser :
         Generates a parse tree for a static variable declaration or field declaration
         @return a ParseTree that represents a static variable declaration or field declaration
         """
-        return None 
+        tree = ParseTree('classVarDec', '')
+
+        tree.addChild(self.mustBe('keyword', self.current().getValue()))
+        
+        if self.have('keyword', 'int') or self.have('keyword', 'char') or self.have('keyword', 'boolean'):
+            tree.addChild(self.mustBe('keyword', self.current().getValue()))
+        elif self.have('identifier', self.current().getValue()):
+            tree.addChild(self.mustBe('identifier', self.current().getValue()))
+        else:
+            raise ParseException("Expected type in classVarDec")
+        
+        tree.addChild(self.mustBe('identifier', self.current().getValue()))
+
+        while self.have('symbol', ','):
+            tree.addChild(self.mustBe('symbol',','))
+            tree.addChild(self.mustBe('identifier', self.current().getValue()))
+        
+        tree.addChild(self.mustBe('symbol', ';'))
+        return tree
     
 
     def compileSubroutine(self):
@@ -209,6 +227,12 @@ if __name__ == "__main__":
     tokens.append(Token("keyword","class"))
     tokens.append(Token("identifier","MyClass"))
     tokens.append(Token("symbol","{"))
+    tokens.append(Token("keyword","static"))
+    tokens.append(Token("keyword","int"))
+    tokens.append(Token("identifier","x"))
+    tokens.append(Token("symbol",","))
+    tokens.append(Token("identifier","y"))
+    tokens.append(Token("symbol",";"))
     tokens.append(Token("symbol","}"))
 
     parser = CompilerParser(tokens)

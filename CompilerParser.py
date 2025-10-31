@@ -39,15 +39,11 @@ class CompilerParser :
 
         class_tree.addChild(self.mustBe('symbol', '{'))
 
-        VarDec = self.compileClassVarDec()
-        while VarDec is not None:
-            class_tree.addChild(VarDec)
-            VarDec = self.compileClassVarDec()
+        while self.have('keyword', 'static') or self.have('keyword', 'field'):
+            class_tree.addChild(self.compileClassVarDec())
 
-        Subroutine = self.compileSubroutine()
-        while Subroutine is not None:
-            class_tree.addChild(Subroutine)
-            Subroutine = self.compileSubroutine()
+        while self.have('keyword', 'constructor') or self.have('keyword', 'function'):
+            class_tree.addChild(self.compileSubroutine())  
 
         class_tree.addChild(self.mustBe('symbol', '}'))
 
@@ -179,13 +175,14 @@ class CompilerParser :
 
 
     def have(self,expectedType,expectedValue):
-        current_token = self.current()
-        return(current_token.getType() == expectedType and current_token.getValue() == expectedValue)
-        # if current_token.getType() == expectedType and current_token.getValue() == expectedValue:
-        #     return True
-        # elif current_token.getType() == expectedType and current_token.getValue() in expectedValue:
-        #     return True
-        # return False
+        if self.current_token_index >= len(self.tokens):
+            return False
+        token = self.current()
+        if expectedType and token.getType() != expectedType:
+            return False
+        if expectedType and token.getValue() != expectedValue:
+            return False
+        return True
 
 
     def mustBe(self,expectedType,expectedValue):

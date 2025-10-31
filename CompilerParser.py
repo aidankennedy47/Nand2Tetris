@@ -41,8 +41,9 @@ class CompilerParser :
 
         while self.have('keyword', 'static') or self.have('keyword', 'field'):
             class_tree.addChild(self.compileClassVarDec())
+            break #temp, add compileclassvardec
 
-        while self.have('keyword', 'constructor') or self.have('keyword', 'function'):
+        while self.have('keyword', 'constructor') or self.have('keyword', 'function') or self.have('keyword', 'method'):
             class_tree.addChild(self.compileSubroutine())  
 
         class_tree.addChild(self.mustBe('symbol', '}'))
@@ -180,7 +181,7 @@ class CompilerParser :
         token = self.current()
         if expectedType and token.getType() != expectedType:
             return False
-        if expectedType and token.getValue() != expectedValue:
+        if expectedValue and token.getValue() != expectedValue:
             return False
         return True
 

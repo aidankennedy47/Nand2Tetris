@@ -142,7 +142,18 @@ class CompilerParser :
         Generates a parse tree for a subroutine's body
         @return a ParseTree that represents a subroutine's body
         """
-        return None 
+
+        tree = ParseTree('subroutineBody', '')
+        tree.addChild(self.mustBe('symbol', '{'))
+
+        while self.have('keyword', 'var'):
+            tree.addChild(self.compileVarDec())
+
+        tree.addChild(self.compileStatements())
+
+        tree.addChild(self.mustBe('symbol', '}'))
+
+        return tree
     
     
     def compileVarDec(self):
@@ -150,15 +161,48 @@ class CompilerParser :
         Generates a parse tree for a variable declaration
         @return a ParseTree that represents a var declaration
         """
-        return None 
-    
+        tree = ParseTree('varDec', '')
+
+        tree.addChild(self.mustBe('keyword', 'var'))
+
+        if self.have('keyword', 'int') or self.have('keyword', 'char') or self.have('keyword', 'boolean'):
+            tree.addChild(self.mustBe('keyword', self.current().getValue()))
+        elif self.have('identifier', self.current().getValue()):
+            tree.addChild(self.mustBe('identifier', self.current().getValue()))
+        else:
+            raise ParseException("Expected type in varDec")
+
+        tree.addChild(self.mustBe('identifier', self.current().getValue()))
+
+        while self.have('symbol', ','):
+            tree.addChild(self.mustBe('symbol', ','))
+            tree.addChild(self.mustBe('identifier', self.current().getValue()))
+
+        tree.addChild(self.mustBe('symbol', ';'))
+
+        return tree 
 
     def compileStatements(self):
         """
         Generates a parse tree for a series of statements
         @return a ParseTree that represents the series of statements
         """
-        return None 
+        tree = ParseTree('statements', '')
+
+        while True:
+            if self.have('keyword', 'let'):
+                tree.addChild(self.compileLet())
+            elif self.have('keyword', 'if'):
+                tree.addChild(self.compileIf())
+            elif self.have('keyword', 'while'):
+                tree.addChild(self.compileWhile())
+            elif self.have('keyword', 'do'):
+                tree.addChild(self.compileDo())
+            elif self.have('keyword', 'return'):
+                tree.addChild(self.compileReturn())
+            else:
+                break
+        return tree
     
     
     def compileLet(self):
@@ -166,7 +210,8 @@ class CompilerParser :
         Generates a parse tree for a let statement
         @return a ParseTree that represents the statement
         """
-        return None 
+        token = self.mustBe('keyword', 'let')
+        return ParseTree('let', token.getValue())
 
 
     def compileIf(self):
@@ -174,7 +219,8 @@ class CompilerParser :
         Generates a parse tree for an if statement
         @return a ParseTree that represents the statement
         """
-        return None 
+        token = self.mustBe('keyword', 'if')
+        return ParseTree('if', token.getValue())
 
     
     def compileWhile(self):
@@ -182,7 +228,8 @@ class CompilerParser :
         Generates a parse tree for a while statement
         @return a ParseTree that represents the statement
         """
-        return None 
+        token = self.mustBe('keyword', 'while')
+        return ParseTree('while', token.getValue())
 
 
     def compileDo(self):
@@ -190,7 +237,8 @@ class CompilerParser :
         Generates a parse tree for a do statement
         @return a ParseTree that represents the statement
         """
-        return None 
+        token = self.mustBe('keyword', 'do')
+        return ParseTree('do', token.getValue())
 
 
     def compileReturn(self):
@@ -198,7 +246,8 @@ class CompilerParser :
         Generates a parse tree for a return statement
         @return a ParseTree that represents the statement
         """
-        return None 
+        token = self.mustBe('keyword', 'return')
+        return ParseTree('return', token.getValue())
 
 
     def compileExpression(self):
@@ -267,20 +316,23 @@ if __name__ == "__main__":
         }
     """
     tokens = []
-    tokens.append(Token("keyword","int"))
-    # tokens.append(Token("keyword","void"))
-    tokens.append(Token("identifier","x"))
-    tokens.append(Token("symbol",","))
-    # tokens.append(Token("symbol",")"))
-    tokens.append(Token("keyword","boolean"))
-    tokens.append(Token("identifier","y"))
-    # tokens.append(Token("keyword","return"))
+    tokens.append(Token("keyword","let"))
+    tokens.append(Token("keyword","if"))
+    tokens.append(Token("keyword","while"))
+    tokens.append(Token("keyword","do"))
+    tokens.append(Token("keyword","return"))
+    # tokens.append(Token("identifier","x"))
+    # tokens.append(Token("symbol",","))
+    # # # tokens.append(Token("symbol",")"))
+    # # tokens.append(Token("keyword","boolean"))
+    # tokens.append(Token("identifier","y"))
+    # # tokens.append(Token("keyword","return"))
     # tokens.append(Token("symbol",";"))
     # tokens.append(Token("symbol","}"))
 
     parser = CompilerParser(tokens)
     try:
-        result = parser.compileParameterList()
+        result = parser.compileStatements()
         print(result)
     except ParseException:
         print("Error Parsing!")

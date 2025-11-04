@@ -83,15 +83,58 @@ class CompilerParser :
         Generates a parse tree for a method, function, or constructor
         @return a ParseTree that represents the method, function, or constructor
         """
-        return None 
-    
+        tree = ParseTree('subroutineDec', '')
+
+        tree.addChild(self.mustBe('keyword', self.current().getValue()))
+
+        if self.have('keyword', 'void') or self.have('keyword', 'int') or self.have('keyword', 'char') or self.have('keyword', 'boolean'):
+            tree.addChild(self.mustBe('keyword', self.current().getValue()))
+        elif self.have('identifier', self.current().getValue()):
+            tree.addChild(self.mustBe('identifier', self.current().getValue()))
+        else:
+            raise ParseException("Expected type in subroutineDec")
+
+        tree.addChild(self.mustBe('identifier', self.current().getValue()))
+
+        tree.addChild(self.mustBe('symbol', '('))
+
+        tree.addChild(ParseTree('parameterList', ''))
+
+        tree.addChild(self.mustBe('symbol', ')'))
+
+        body = ParseTree('subroutineBody', '')
+        body.addChild(self.mustBe('symbol', '{'))
+        body.addChild(self.mustBe('symbol', '}'))
+        tree.addChild(body)
+
+        return tree
     
     def compileParameterList(self):
         """
         Generates a parse tree for a subroutine's parameters
         @return a ParseTree that represents a subroutine's parameters
         """
-        return None 
+        tree = ParseTree('parameterList', '')
+
+        if self.have('symbol', ')'):
+            return tree
+
+        while True:
+            if self.have('keyword', 'int') or self.have('keyword', 'char') or self.have('keyword', 'boolean'):
+                tree.addChild(self.mustBe('keyword', self.current().getValue()))
+            elif self.have('identifier', self.current().getValue()):
+                tree.addChild(self.mustBe('identifier', self.current().getValue()))
+            else:
+                raise ParseException("Expected type in parameterList")
+
+            tree.addChild(self.mustBe('identifier', self.current().getValue()))
+
+            if self.have('symbol', ','):
+                tree.addChild(self.mustBe('symbol', ','))
+            else:
+                break
+
+        return tree
     
     
     def compileSubroutineBody(self):
@@ -224,20 +267,20 @@ if __name__ == "__main__":
         }
     """
     tokens = []
-    tokens.append(Token("keyword","class"))
-    tokens.append(Token("identifier","MyClass"))
-    tokens.append(Token("symbol","{"))
-    tokens.append(Token("keyword","static"))
     tokens.append(Token("keyword","int"))
+    # tokens.append(Token("keyword","void"))
     tokens.append(Token("identifier","x"))
     tokens.append(Token("symbol",","))
+    # tokens.append(Token("symbol",")"))
+    tokens.append(Token("keyword","boolean"))
     tokens.append(Token("identifier","y"))
-    tokens.append(Token("symbol",";"))
-    tokens.append(Token("symbol","}"))
+    # tokens.append(Token("keyword","return"))
+    # tokens.append(Token("symbol",";"))
+    # tokens.append(Token("symbol","}"))
 
     parser = CompilerParser(tokens)
     try:
-        result = parser.compileClass()
+        result = parser.compileParameterList()
         print(result)
     except ParseException:
         print("Error Parsing!")

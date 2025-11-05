@@ -81,7 +81,7 @@ class CompilerParser :
         Generates a parse tree for a method, function, or constructor
         @return a ParseTree that represents the method, function, or constructor
         """
-        tree = ParseTree('subroutineDec', '')
+        tree = ParseTree('subroutine', '')
 
         tree.addChild(self.mustBe('keyword', self.current().getValue()))
 

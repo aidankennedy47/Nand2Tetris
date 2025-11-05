@@ -343,7 +343,7 @@ class CompilerParser :
             
             elif self.have('symbol', '.'):
                     tree.addChild(self.mustBe('symbol', '.'))
-                    tree.addChild(self.mustBe('identifier', self.curent().getValue()))
+                    tree.addChild(self.mustBe('identifier', self.current().getValue()))
                     tree.addChild(self.mustBe('symbol', '('))
                     tree.addChild(self.compileExpressionList())
                     tree.addChild(self.mustBe('symbol', ')'))

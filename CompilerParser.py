@@ -319,7 +319,7 @@ class CompilerParser :
         tree = ParseTree('term', '')
         token = self.current()
 
-        if token.getType() in ['intConstant', 'strConstant', 'keyword']:
+        if token.getType() in ['integerConstant', 'stringConstant', 'keyword']:
             tree.addChild(self.mustBe(token.getType(), token.getValue()))
         
         elif token.getType() == 'identifier':

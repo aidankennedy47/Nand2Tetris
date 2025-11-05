@@ -307,11 +307,13 @@ class CompilerParser :
         Generates a parse tree for an expression
         @return a ParseTree that represents the expression
         """
-        token = self.current()
-        self.next()
-
         tree = ParseTree('expression', '')
-        tree.addChild(ParseTree(token.getType(), token.getValue()))
+        tree.addChild(self.compileTerm())
+
+        while self.have('symbol', '+') or self.have('symbol', '-') or self.have('symbol', '*') or self.have('symbol', '/') or self.have('symbol', '&') or self.have('symbol', '|') or self.have('symbol', '<') or self.have('symbol', '>') or self.have('symbol', '='):
+            tree.addChild(self.mustBe('symbol', self.current().getValue()))
+            tree.addChild(self.compileTerm())
+
         return tree 
 
 
@@ -366,7 +368,16 @@ class CompilerParser :
         Generates a parse tree for an expression list
         @return a ParseTree that represents the expression list
         """
-        return ParseTree('expressionList', '')
+        tree = ParseTree('expressionList', '')
+
+        if not (self.have('symbol', ')')):
+            tree.addChild(self.compileExpression())
+
+            while self.have('symbol', ','):
+                tree.addChild(self.mustBe('symbol', ','))
+                tree.addChild(self.compileExpression())
+
+        return tree
 
 
     def next(self):
@@ -413,11 +424,11 @@ if __name__ == "__main__":
     tokens = []
     # tokens.append(Token("keyword","return"))
     tokens.append(Token("identifier", "x"))
-    # tokens.append(Token("symbol",";"))
+    tokens.append(Token("symbol",","))
 
-    # tokens.append(Token("symbol","("))
-    # tokens.append(Token("symbol",")"))
-    # tokens.append(Token("symbol",";"))
+    tokens.append(Token("intConstant","5"))
+    tokens.append(Token("symbol",","))
+    tokens.append(Token("identifier","y"))
 
     # tokens.append(Token("keyword","while"))
     # tokens.append(Token("symbol","("))
@@ -449,7 +460,7 @@ if __name__ == "__main__":
 
     parser = CompilerParser(tokens)
     try:
-        result = parser.compileTerm()
+        result = parser.compileExpressionList()
         print(result)
     except ParseException:
         print("Error Parsing!")

@@ -96,14 +96,10 @@ class CompilerParser :
 
         tree.addChild(self.mustBe('symbol', '('))
 
-        tree.addChild(ParseTree('parameterList', ''))
-
+        tree.addChild(self.compileParameterList())
         tree.addChild(self.mustBe('symbol', ')'))
 
-        body = ParseTree('subroutineBody', '')
-        body.addChild(self.mustBe('symbol', '{'))
-        body.addChild(self.mustBe('symbol', '}'))
-        tree.addChild(body)
+        tree.addChild(self.compileSubroutineBody())
 
         return tree
     

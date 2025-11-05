@@ -208,15 +208,15 @@ class CompilerParser :
         Generates a parse tree for a let statement
         @return a ParseTree that represents the statement
         """
-        tree = ParseTree('let', '')
+        tree = ParseTree('letStatement', '')
         tree.addChild(self.mustBe('keyword', 'let'))
 
         tree.addChild(self.mustBe('identifier', self.current().getValue()))
 
-        if self.have('symbol', '['):
-            tree.addChild(self.mustBe('symbol', '['))
-            tree.addChild(self.compileExpression())
-            tree.addChild(self.mustBe('symbol', ']'))
+        # if self.have('symbol', '['):
+        #     tree.addChild(self.mustBe('symbol', '['))
+        #     tree.addChild(self.compileExpression())
+        #     tree.addChild(self.mustBe('symbol', ']'))
 
         tree.addChild(self.mustBe('symbol', '='))
 
@@ -308,11 +308,12 @@ class CompilerParser :
         @return a ParseTree that represents the expression
         """
         tree = ParseTree('expression', '')
-        tree.addChild(self.compileTerm())
+        tree.addChild(self.mustBe('keyword', 'skip'))
+        # tree.addChild(self.compileTerm())
 
-        while self.have('symbol', '+') or self.have('symbol', '-') or self.have('symbol', '*') or self.have('symbol', '/') or self.have('symbol', '&') or self.have('symbol', '|') or self.have('symbol', '<') or self.have('symbol', '>') or self.have('symbol', '='):
-            tree.addChild(self.mustBe('symbol', self.current().getValue()))
-            tree.addChild(self.compileTerm())
+        # while self.have('symbol', '+') or self.have('symbol', '-') or self.have('symbol', '*') or self.have('symbol', '/') or self.have('symbol', '&') or self.have('symbol', '|') or self.have('symbol', '<') or self.have('symbol', '>') or self.have('symbol', '='):
+        #     tree.addChild(self.mustBe('symbol', self.current().getValue()))
+        #     tree.addChild(self.compileTerm())
 
         return tree 
 

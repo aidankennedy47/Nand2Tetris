@@ -41,11 +41,9 @@ class CompilerParser :
 
         while self.have('keyword', 'static') or self.have('keyword', 'field'):
             class_tree.addChild(self.compileClassVarDec())
-            break #temp, add compileclassvardec
 
         while self.have('keyword', 'constructor') or self.have('keyword', 'function') or self.have('keyword', 'method'):
             class_tree.addChild(self.compileSubroutine())
-            break #temp, add compileclassvardec  
 
         class_tree.addChild(self.mustBe('symbol', '}'))
 

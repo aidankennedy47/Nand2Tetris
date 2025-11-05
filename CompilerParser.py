@@ -232,7 +232,7 @@ class CompilerParser :
         Generates a parse tree for an if statement
         @return a ParseTree that represents the statement
         """
-        tree = ParseTree('if', '')
+        tree = ParseTree('ifStatement', '')
         tree.addChild(self.mustBe('keyword', 'if'))
         tree.addChild(self.mustBe('symbol', '('))
         tree.addChild(self.compileExpression())
@@ -255,7 +255,7 @@ class CompilerParser :
         Generates a parse tree for a while statement
         @return a ParseTree that represents the statement
         """
-        tree = ParseTree('while', '')
+        tree = ParseTree('whileStatement', '')
         tree.addChild(self.mustBe('keyword', 'while'))
         tree.addChild(self.mustBe('symbol', '('))
         tree.addChild(self.compileExpression())
@@ -271,17 +271,17 @@ class CompilerParser :
         Generates a parse tree for a do statement
         @return a ParseTree that represents the statement
         """
-        tree = ParseTree('do', '')
+        tree = ParseTree('doStatement', '')
         tree.addChild(self.mustBe('keyword', 'do'))
-        tree.addChild(self.mustBe('identifier', self.current().getValue()))
+        # tree.addChild(self.mustBe('identifier', self.current().getValue()))
 
-        if self.have('symbol', '.'):
-            tree.addChild(self.mustBe('symbol', '('))
-            tree.addChild(self.mustBe('identifier', self.current().getValue()))
+        # if self.have('symbol', '.'):
+        #     tree.addChild(self.mustBe('symbol', '('))
+        #     tree.addChild(self.mustBe('identifier', self.current().getValue()))
 
-        tree.addChild(self.mustBe('symbol', '('))
-        tree.addChild(self.compileExpressionList())
-        tree.addChild(self.mustBe('symbol', ')'))
+        # tree.addChild(self.mustBe('symbol', '('))
+        tree.addChild(self.compileExpression())
+        # tree.addChild(self.mustBe('symbol', ')'))
         tree.addChild(self.mustBe('symbol', ';'))
         return tree
 
@@ -293,9 +293,9 @@ class CompilerParser :
         """
         tree = ParseTree('return', '')
         tree.addChild(self.mustBe('keyword', 'return'))
-        
-        if not self.have('symbol', ';'):
-            tree.addChild(self.compileExpression())
+        tree.addChild(self.compileExpression())
+        # if not self.have('symbol', ';'):
+        #     tree.addChild(self.compileExpression())
 
         tree.addChild(self.mustBe('symbol', ';'))
 

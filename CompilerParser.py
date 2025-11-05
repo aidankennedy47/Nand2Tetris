@@ -302,12 +302,11 @@ class CompilerParser :
         @return a ParseTree that represents the expression
         """
         tree = ParseTree('expression', '')
-        tree.addChild(self.mustBe('keyword', 'skip'))
-        # tree.addChild(self.compileTerm())
+        tree.addChild(self.compileTerm())
 
-        # while self.have('symbol', '+') or self.have('symbol', '-') or self.have('symbol', '*') or self.have('symbol', '/') or self.have('symbol', '&') or self.have('symbol', '|') or self.have('symbol', '<') or self.have('symbol', '>') or self.have('symbol', '='):
-        #     tree.addChild(self.mustBe('symbol', self.current().getValue()))
-        #     tree.addChild(self.compileTerm())
+        while self.have('symbol', '+') or self.have('symbol', '-') or self.have('symbol', '*') or self.have('symbol', '/') or self.have('symbol', '&') or self.have('symbol', '|') or self.have('symbol', '<') or self.have('symbol', '>') or self.have('symbol', '='):
+            tree.addChild(self.mustBe('symbol', self.current().getValue()))
+            tree.addChild(self.compileTerm())
 
         return tree 
 

@@ -213,10 +213,10 @@ class CompilerParser :
 
         tree.addChild(self.mustBe('identifier', self.current().getValue()))
 
-        # if self.have('symbol', '['):
-        #     tree.addChild(self.mustBe('symbol', '['))
-        #     tree.addChild(self.compileExpression())
-        #     tree.addChild(self.mustBe('symbol', ']'))
+        if self.have('symbol', '['):
+            tree.addChild(self.mustBe('symbol', '['))
+            tree.addChild(self.compileExpression())
+            tree.addChild(self.mustBe('symbol', ']'))
 
         tree.addChild(self.mustBe('symbol', '='))
 
@@ -291,11 +291,11 @@ class CompilerParser :
         Generates a parse tree for a return statement
         @return a ParseTree that represents the statement
         """
-        tree = ParseTree('return', '')
+        tree = ParseTree('returnStatement', '')
         tree.addChild(self.mustBe('keyword', 'return'))
-        tree.addChild(self.compileExpression())
-        # if not self.have('symbol', ';'):
-        #     tree.addChild(self.compileExpression())
+        
+        if not self.have('symbol', ';'):
+            tree.addChild(self.compileExpression())
 
         tree.addChild(self.mustBe('symbol', ';'))
 
